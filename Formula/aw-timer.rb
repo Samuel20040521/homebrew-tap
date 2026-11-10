@@ -1,8 +1,8 @@
 class AwTimer < Formula
   desc "Rize-style focus timer for the macOS menu bar, built on ActivityWatch"
   homepage "https://github.com/Samuel20040521/aw-timer"
-  url "https://github.com/Samuel20040521/aw-timer/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "11f83c52ea4b80149f3cb725375f4d7740948033fff5bcd37e12db3e50a0ed62"
+  url "https://github.com/Samuel20040521/aw-timer/archive/refs/tags/v0.2.0.tar.gz"
+  sha256 "a3d14d15ca7ddc471370ce2ec7919aea87d4a13fa0127ad440e74f1717d6cda2"
   license "MIT"
   head "https://github.com/Samuel20040521/aw-timer.git", branch: "main"
 
@@ -11,6 +11,9 @@ class AwTimer < Formula
 
   def install
     system "cargo", "install", *std_cargo_args
+    # Re-sign so the Info.plist embedded in the binary is bound to the
+    # signature; macOS needs it to ask for Calendar access.
+    system "codesign", "--force", "--sign", "-", bin/"aw-timer"
     pkgshare.install "default_config.toml"
   end
 
@@ -33,6 +36,9 @@ class AwTimer < Formula
 
       If you previously used install.sh, run its uninstall.sh first so
       two copies don't run at once.
+
+      Clicking a notification opens the report window only in the
+      install.sh version (an app bundle); here it opens Script Editor.
 
       Optional config: copy the documented default and edit it.
         mkdir -p ~/.config/aw-timer
